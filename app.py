@@ -1,7 +1,9 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, redirect
 from datetime import datetime
+from form import NewBlogForm
 
 app = Flask(__name__)
+app.config["SECRET_KEY"] = 'my_secret_key'
 
 blogs = [
     {
@@ -31,6 +33,15 @@ blogs = [
 @app.route('/')
 def index():
     return render_template('index.html', blogs=blogs)
+
+
+@app.route('/new-blog', methods=['GET', 'POST'])
+def new_blog():
+    form = NewBlogForm()
+    if form.validate_on_submit():
+        print("Post created successfully")
+        return redirect(url_for('index'))
+    return render_template('newBlog.html', form=form)
 
 
 if __name__ == '__main__':
